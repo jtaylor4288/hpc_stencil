@@ -1,0 +1,8 @@
+Running on host node31-030
+Time is Tue Oct 16 12:22:05 BST 2018
+Directory is /panfs/panasas01/cosc/jt16164/intro-hpc-stencil
+PBS job ID is 7537832.master.cm.cluster
+------------------------------------
+ runtime: 8.174263 s
+------------------------------------
+Warning: Permanently added 'node31-030,10.131.0.222' (RSA) to the list of known hosts.
