@@ -1,5 +1,5 @@
-Running with no changes
+Running a binary compiled on the Intel compiler
 
-1024:    8.213591 s
-4096:  317.467205 s
-8000: Exceeded 10 m
+1024:   3.404689 s
+4096:  49.233513 s
+8000: 175.544872 s
