@@ -1,3 +1,5 @@
-No changes
+Running with no changes
 
-runtime: 8.174263 s
+1024:    8.213591 s
+4096:  317.467205 s
+8000: Exceeded 10 m
