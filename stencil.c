@@ -6,9 +6,9 @@
 // Define output file name
 #define OUTPUT_FILE "stencil.pgm"
 
-void stencil(const int nx, const int ny, double *  image, double *  tmp_image);
-void init_image(const int nx, const int ny, double *  image, double *  tmp_image);
-void output_image(const char * file_name, const int nx, const int ny, double *image);
+void stencil(const int nx, const int ny, float *  image, float *  tmp_image);
+void init_image(const int nx, const int ny, float *  image, float *  tmp_image);
+void output_image(const char * file_name, const int nx, const int ny, float *image);
 double wtime(void);
 
 int main(int argc, char *argv[]) {
@@ -27,11 +27,11 @@ int main(int argc, char *argv[]) {
   int alloc_ny = ny + 2;
 
   // Allocate the image
-  double *alloc_image = malloc(sizeof(double) * nx * alloc_ny);
-  double *alloc_tmp_image = malloc(sizeof(double) * nx * alloc_ny);
+  float *alloc_image = malloc(sizeof(float) * nx * alloc_ny);
+  float *alloc_tmp_image = malloc(sizeof(float) * nx * alloc_ny);
 
-  double *image = alloc_image + nx;
-  double *tmp_image = alloc_tmp_image + nx;
+  float *image = alloc_image + nx;
+  float *tmp_image = alloc_tmp_image + nx;
 
   // Set the input image
   init_image(nx, alloc_ny, alloc_image, alloc_tmp_image);
@@ -55,29 +55,29 @@ int main(int argc, char *argv[]) {
   free(alloc_tmp_image);
 }
 
-void stencil(const int nx, const int ny, double *  image, double *  tmp_image) {
+void stencil(const int nx, const int ny, float *  image, float *  tmp_image) {
   for (int j = 0; j < ny; ++j) {
     for (int i = 0; i < nx; ++i) {
-      tmp_image[j+i*ny] = 0.6 * image[j+i*ny]
-                        + 0.1 * ( image[j  +(i-1)*ny] * (i > 0)
-                                + image[j  +(i+1)*ny] * (i < nx-1)
-                                + image[j-1+i*ny]     * (j > 0)
-                                + image[j+1+i*ny]     * (j < ny-1) );
+      tmp_image[j+i*ny] = 0.6f * image[j+i*ny]
+                        + 0.1f * ( image[j  +(i-1)*ny] * (i > 0)
+                               + image[j  +(i+1)*ny] * (i < nx-1)
+                               + image[j-1+i*ny]     * (j > 0)
+                               + image[j+1+i*ny]     * (j < ny-1) );
     }
   }
 }
 
 // Create the input image
-void init_image(const int nx, const int alloc_ny, double *  alloc_image, double *  alloc_tmp_image) {
+void init_image(const int nx, const int alloc_ny, float *  alloc_image, float *  alloc_tmp_image) {
 
-  double *image = alloc_image + nx;
+  float *image = alloc_image + nx;
   int ny = alloc_ny - 2;
 
   // Zero everything
   for (int j = 0; j < alloc_ny; ++j) {
     for (int i = 0; i < nx; ++i) {
-      alloc_image[j+i*ny] = 0.0;
-      alloc_tmp_image[j+i*ny] = 0.0;
+      alloc_image[j+i*ny] = 0.0f;
+      alloc_tmp_image[j+i*ny] = 0.0f;
     }
   }
 
@@ -87,7 +87,7 @@ void init_image(const int nx, const int alloc_ny, double *  alloc_image, double 
       for (int jj = j*ny/8; jj < (j+1)*ny/8; ++jj) {
         for (int ii = i*nx/8; ii < (i+1)*nx/8; ++ii) {
           if ((i+j)%2)
-          image[jj+ii*ny] = 100.0;
+          image[jj+ii*ny] = 100.0f;
         }
       }
     }
@@ -95,7 +95,7 @@ void init_image(const int nx, const int alloc_ny, double *  alloc_image, double 
 }
 
 // Routine to output the image in Netpbm grayscale binary image format
-void output_image(const char * file_name, const int nx, const int ny, double *image) {
+void output_image(const char * file_name, const int nx, const int ny, float *image) {
 
   // Open output file
   FILE *fp = fopen(file_name, "w");
@@ -110,7 +110,7 @@ void output_image(const char * file_name, const int nx, const int ny, double *im
   // Calculate maximum value of image
   // This is used to rescale the values
   // to a range of 0-255 for output
-  double maximum = 0.0;
+  float maximum = 0.0f;
   for (int j = 0; j < ny; ++j) {
     for (int i = 0; i < nx; ++i) {
       if (image[j+i*ny] > maximum)
@@ -121,7 +121,7 @@ void output_image(const char * file_name, const int nx, const int ny, double *im
   // Output image, converting to numbers 0-255
   for (int j = 0; j < ny; ++j) {
     for (int i = 0; i < nx; ++i) {
-      fputc((char)(255.0*image[j+i*ny]/maximum), fp);
+      fputc((char)(255.0f*image[j+i*ny]/maximum), fp);
     }
   }
 
