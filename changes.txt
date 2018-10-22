@@ -1,5 +1,6 @@
 Running a binary compiled on the Intel compiler
+Added padding and turned if statements into multiplications
 
-1024:   3.404689 s
-4096:  49.233513 s
-8000: 175.544872 s
+1024:  0.381895 s
+4096:  6.619702 s
+8000: 25.703632 s
