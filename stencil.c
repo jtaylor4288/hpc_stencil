@@ -24,12 +24,17 @@ int main(int argc, char *argv[]) {
   int ny = atoi(argv[2]);
   int niters = atoi(argv[3]);
 
+  int alloc_ny = ny + 2;
+
   // Allocate the image
-  double *image = malloc(sizeof(double)*nx*ny);
-  double *tmp_image = malloc(sizeof(double)*nx*ny);
+  double *alloc_image = malloc(sizeof(double) * nx * alloc_ny);
+  double *alloc_tmp_image = malloc(sizeof(double) * nx * alloc_ny);
+
+  double *image = alloc_image + nx;
+  double *tmp_image = alloc_tmp_image + nx;
 
   // Set the input image
-  init_image(nx, ny, image, tmp_image);
+  init_image(nx, alloc_ny, alloc_image, alloc_tmp_image);
 
   // Call the stencil kernel
   double tic = wtime();
@@ -46,28 +51,33 @@ int main(int argc, char *argv[]) {
   printf("------------------------------------\n");
 
   output_image(OUTPUT_FILE, nx, ny, image);
-  free(image);
+  free(alloc_image);
+  free(alloc_tmp_image);
 }
 
 void stencil(const int nx, const int ny, double *  image, double *  tmp_image) {
   for (int j = 0; j < ny; ++j) {
     for (int i = 0; i < nx; ++i) {
-      tmp_image[j+i*ny] = image[j+i*ny] * 3.0/5.0;
-      if (i > 0)    tmp_image[j+i*ny] += image[j  +(i-1)*ny] * 0.5/5.0;
-      if (i < nx-1) tmp_image[j+i*ny] += image[j  +(i+1)*ny] * 0.5/5.0;
-      if (j > 0)    tmp_image[j+i*ny] += image[j-1+i*ny] * 0.5/5.0;
-      if (j < ny-1) tmp_image[j+i*ny] += image[j+1+i*ny] * 0.5/5.0;
+      tmp_image[j+i*ny] = 0.6 * image[j+i*ny]
+                        + 0.1 * ( image[j  +(i-1)*ny] * (i > 0)
+                                + image[j  +(i+1)*ny] * (i < nx-1)
+                                + image[j-1+i*ny]     * (j > 0)
+                                + image[j+1+i*ny]     * (j < ny-1) );
     }
   }
 }
 
 // Create the input image
-void init_image(const int nx, const int ny, double *  image, double *  tmp_image) {
+void init_image(const int nx, const int alloc_ny, double *  alloc_image, double *  alloc_tmp_image) {
+
+  double *image = alloc_image + nx;
+  int ny = alloc_ny - 2;
+
   // Zero everything
-  for (int j = 0; j < ny; ++j) {
+  for (int j = 0; j < alloc_ny; ++j) {
     for (int i = 0; i < nx; ++i) {
-      image[j+i*ny] = 0.0;
-      tmp_image[j+i*ny] = 0.0;
+      alloc_image[j+i*ny] = 0.0;
+      alloc_tmp_image[j+i*ny] = 0.0;
     }
   }
 
