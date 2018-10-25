@@ -59,10 +59,10 @@ void stencil(const int nx, const int ny, float *  image, float *  tmp_image) {
   for (int j = 0; j < ny; ++j) {
     for (int i = 0; i < nx; ++i) {
       tmp_image[j+i*ny] = 0.6f * image[j+i*ny]
-                        + 0.1f * ( image[j  +(i-1)*ny] * (i > 0)
-                               + image[j  +(i+1)*ny] * (i < nx-1)
-                               + image[j-1+i*ny]     * (j > 0)
-                               + image[j+1+i*ny]     * (j < ny-1) );
+                        + 0.1f * ( image[j  +(i-1)*ny]
+                                 + image[j  +(i+1)*ny]
+                                 + image[j-1+i*ny]     * (j > 0)
+                                 + image[j+1+i*ny]     * (j < ny-1) );
     }
   }
 }
